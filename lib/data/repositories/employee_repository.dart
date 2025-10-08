@@ -61,14 +61,33 @@ class EmployeeRepository implements IEmployeeRepository {
   }
 
   @override
-  Future<void> deleteEmployee(int id) {
-    // TODO: implement deleteEmployee
-    throw UnimplementedError();
+  Future<Employee> updateEmployee(Employee employee) async {
+    if (employee.id == null) {
+      throw Exception('ID employee wajib diisi untuk update');
+    }
+    try {
+      final model = EmployeeModel(
+        id: employee.id,
+        name: employee.name,
+        position: employee.position,
+        salary: employee.salary,
+        address: employee.address,
+        phone: employee.phone,
+      );
+      final res =
+          await _dio.put('/employees/${employee.id}', data: model.toJson());
+      return EmployeeModel.fromJson(res.data);
+    } on DioException catch (e) {
+      throw Exception(e.response?.data ?? e.message);
+    }
   }
 
   @override
-  Future<Employee> updateEmployee(Employee employee) {
-    // TODO: implement updateEmployee
-    throw UnimplementedError();
+  Future<void> deleteEmployee(int id) async {
+    try {
+      await _dio.delete('/employees/$id');
+    } on DioException catch (e) {
+      throw Exception(e.response?.data ?? e.message);
+    }
   }
 }

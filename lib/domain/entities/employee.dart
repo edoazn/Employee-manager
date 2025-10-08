@@ -1,5 +1,5 @@
 class Employee {
-  final int? id;
+  final String? id;
   final String name;
   final String position;
   final double salary;
@@ -16,7 +16,7 @@ class Employee {
   });
 
   Employee copyWith({
-    int? id,
+    String? id,
     String? name,
     String? position,
     double? salary,

@@ -114,7 +114,9 @@ class _EmployeeTile extends ConsumerWidget {
             ),
           );
           if (ok == true) {
-            await ref.read(employeeListProvider.notifier).deleteById(emp.id!);
+            await ref
+                .read(employeeListProvider.notifier)
+                .deleteById(emp.id! as int);
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text('Data dihapus')));
           }

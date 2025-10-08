@@ -11,12 +11,10 @@ class EmployeeModel extends Employee {
   });
 
   factory EmployeeModel.fromJson(Map<String, dynamic> json) => EmployeeModel(
-        id: (json['employeeID'] ?? json['id']) is String
-            ? int.tryParse(json['employeeID'] ?? json['id'])
-            : (json['employeeID'] ?? json['id']) as int?,
+        id: (json['id'] ?? json['EmployeeID']).toString(),
         name: json['name'] as String,
         position: json['position'] as String,
-        salary: (json['salary'] as num).toDouble(),
+        salary: double.tryParse(json['salary']?.toString() ?? '') ?? 0.0,
         address: json['address'] as String? ?? '-',
         phone: json['phone'] as String? ?? '-',
       );
