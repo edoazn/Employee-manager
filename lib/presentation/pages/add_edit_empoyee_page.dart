@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/employee.dart';
 import '../provider/employee_form_provider.dart';
-import '../provider/employee_list_provider.dart';
+import '../provider/employee_list_providers.dart';
 
 class AddEditEmployeePage extends ConsumerStatefulWidget {
   final Object? employeeArg; // GoRouter extra

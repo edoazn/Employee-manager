@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/employee_repository.dart';
 import '../../domain/entities/employee.dart';
-import 'employee_list_provider.dart';
+import 'employee_list_providers.dart';
 
 final employeeFormProvider =
     StateNotifierProvider.autoDispose<EmployeeFormNotifier, AsyncValue<void>>(

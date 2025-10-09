@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../domain/entities/employee.dart';
-import '../provider/employee_list_provider.dart';
+import '../provider/employee_list_providers.dart';
+import '../widgets/employee_card.dart';
 
 class EmployeeListPage extends ConsumerWidget {
   const EmployeeListPage({super.key});
@@ -44,9 +45,8 @@ class EmployeeListPage extends ConsumerWidget {
               ref.read(employeeListProvider.notifier).fetchAll(search: query),
           child: items.isEmpty
               ? const Center(child: Text('Belum ada data'))
-              : ListView.separated(
+              : ListView.builder(
                   itemCount: items.length,
-                  separatorBuilder: (_, __) => const Divider(height: 0),
                   itemBuilder: (_, i) => _EmployeeTile(emp: items[i]),
                 ),
         ),
@@ -86,35 +86,32 @@ class _EmployeeTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListTile(
-      title: Text(emp.name),
-      subtitle: Text('${emp.position} • ${emp.phone}'),
+    return EmployeeCard(
+      emp: emp,
       onTap: () => context.push('/edit', extra: emp),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete_outline),
-        onPressed: () async {
-          final ok = await showDialog<bool>(
-            context: context,
-            builder: (_) => AlertDialog(
-              title: const Text('Hapus Data'),
-              content: Text('Yakin ingin menghapus ${emp.name}?'),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: const Text('Batal')),
-                FilledButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: const Text('Hapus')),
-              ],
-            ),
-          );
-          if (ok == true) {
-            await ref.read(employeeListProvider.notifier).deleteById(emp.id!);
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Data dihapus')));
-          }
-        },
-      ),
+      onEdit: () => context.push('/edit', extra: emp),
+      onDelete: () async {
+        final ok = await showDialog<bool>(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Hapus Data'),
+            content: Text('Yakin ingin menghapus ${emp.name}?'),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Batal')),
+              FilledButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Hapus')),
+            ],
+          ),
+        );
+        if (ok == true) {
+          await ref.read(employeeListProvider.notifier).deleteById(emp.id!);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Data dihapus')));
+        }
+      },
     );
   }
 }
