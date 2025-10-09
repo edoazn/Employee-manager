@@ -12,7 +12,7 @@ abstract class IEmployeeRepository {
 
   Future<Employee> updateEmployee(Employee employee);
 
-  Future<void> deleteEmployee(int id);
+  Future<void> deleteEmployee(String id);
 }
 
 class EmployeeRepository implements IEmployeeRepository {
@@ -22,11 +22,16 @@ class EmployeeRepository implements IEmployeeRepository {
   Future<List<Employee>> fetchEmployees({String? search}) async {
     try {
       final res = await _dio.get('/employees', queryParameters: {
-        if (search != null && search.trim().isNotEmpty) 'search': search,
+        if (search != null && search.isNotEmpty) 'search': search,
+        'sortBy': 'createdAt',
+        'order': 'desc',
       });
-      final data =
-          (res.data as List).map((e) => EmployeeModel.fromJson(e)).toList();
-      return data;
+      final list = (res.data as List)
+          .map((e) => EmployeeModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+      list.sort(
+          (a, b) => b.createdAt.toString().compareTo(a.createdAt.toString()));
+      return list;
     } on DioException catch (e) {
       throw Exception(e.response?.data ?? e.message);
     }
@@ -51,6 +56,7 @@ class EmployeeRepository implements IEmployeeRepository {
         salary: employee.salary,
         address: employee.address,
         phone: employee.phone,
+        createdAt: employee.createdAt,
       );
       final res =
           await _dio.post('/employees', data: model.toJson(forPost: true));
@@ -83,7 +89,7 @@ class EmployeeRepository implements IEmployeeRepository {
   }
 
   @override
-  Future<void> deleteEmployee(int id) async {
+  Future<void> deleteEmployee(String id) async {
     try {
       await _dio.delete('/employees/$id');
     } on DioException catch (e) {

@@ -5,6 +5,7 @@ class Employee {
   final double salary;
   final String address;
   final String phone;
+  final DateTime? createdAt;
 
   const Employee({
     this.id,
@@ -13,6 +14,7 @@ class Employee {
     required this.salary,
     required this.address,
     required this.phone,
+    this.createdAt,
   });
 
   Employee copyWith({
@@ -22,6 +24,7 @@ class Employee {
     double? salary,
     String? address,
     String? phone,
+    DateTime? createdAt,
   }) =>
       Employee(
         id: id ?? this.id,
@@ -30,5 +33,6 @@ class Employee {
         salary: salary ?? this.salary,
         address: address ?? this.address,
         phone: phone ?? this.phone,
+        createdAt: createdAt ?? this.createdAt,
       );
 }
