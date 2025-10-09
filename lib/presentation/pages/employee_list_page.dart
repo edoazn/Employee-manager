@@ -15,14 +15,6 @@ class EmployeeListPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Daftar Karyawan'),
-        actions: [
-          IconButton(
-            tooltip: 'Refresh',
-            onPressed: () =>
-                ref.read(employeeListProvider.notifier).fetchAll(search: query),
-            icon: const Icon(Icons.refresh),
-          )
-        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Padding(
@@ -33,8 +25,11 @@ class EmployeeListPage extends ConsumerWidget {
                 prefixIcon: Icon(Icons.search),
                 filled: true,
                 border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  ),
+                ),
               ),
               onChanged: (v) => ref
                   .read(employeeListProvider.notifier)
@@ -114,9 +109,7 @@ class _EmployeeTile extends ConsumerWidget {
             ),
           );
           if (ok == true) {
-            await ref
-                .read(employeeListProvider.notifier)
-                .deleteById(emp.id! as int);
+            await ref.read(employeeListProvider.notifier).deleteById(emp.id!);
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text('Data dihapus')));
           }

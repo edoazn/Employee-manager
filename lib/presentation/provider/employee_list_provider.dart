@@ -25,6 +25,7 @@ class EmployeeListNotifier extends StateNotifier<AsyncValue<List<Employee>>> {
     state = const AsyncLoading();
     try {
       final data = await _repo.fetchEmployees(search: search);
+      // Urutkan berdasarkan createdAt descending
       state = AsyncData(data);
     } catch (e, st) {
       state = AsyncError(e, st);
@@ -38,8 +39,15 @@ class EmployeeListNotifier extends StateNotifier<AsyncValue<List<Employee>>> {
         Timer(const Duration(milliseconds: 500), () => fetchAll(search: q));
   }
 
-  Future<void> deleteById(int id) async {
-    await _repo.deleteEmployee(id);
-    await fetchAll(search: null);
+  Future<void> deleteById(String id) async {
+    final prev = state;
+    state = state.whenData((items) => items.where((e) => e.id != id).toList());
+    try {
+      await _repo.deleteEmployee(id);
+    } catch (e, st) {
+      state = prev;
+      state = AsyncError(e, st);
+      rethrow;
+    }
   }
 }
